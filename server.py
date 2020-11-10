@@ -23,35 +23,3 @@ while True:
     client_conn, client_addr = server_socket.accept()
     handle_client(client_conn, client_addr)
 
-
-
-
-
-'''
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        b = TicTacToe()
-        while not b.check_win() and np.nan not in b.board:
-            data = conn.recv(1024)
-            if not data:
-                pass
-            conn.send(data)
-'''
-
-'''
-import socket
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((socket.gethostbyname('localhost'), 1234))
-
-s.listen(5)
-
-while True:
-    clientsocket, address = s.accept()
-    print(f"connection from {address}")
-    clientsocket.send(bytes("Welcome to the server", "utf-8"))
-'''
