@@ -1,6 +1,5 @@
 
 import socket
-from time import sleep
 
 HOST = '127.0.0.1'
 PORT = 8888
@@ -13,7 +12,6 @@ while True:
     s.send(bytes(message, "utf-8"))
     if message == "goodbye":
         break
-#data = s.recv(1024)
 
 
 '''
