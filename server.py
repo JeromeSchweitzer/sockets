@@ -1,9 +1,11 @@
 import socket
+from tic_tac_toe import TicTacToe
 
 
 HOST="127.0.0.1"
 PORT=8888
 EXIT_MESSAGE="goodbye"
+MARKER=2
 
 
 def start_server(host_ip, port_addr):
@@ -21,20 +23,21 @@ def handle_client(client_conn, client_addr):
     print(f"Connected by {client_addr}")
 
     with client_conn:
-        while True:
-            incoming_data = client_conn.recv(1024)
-            if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
-                print("Client ended the connection.")
-                break
+        board = TicTacToe()
+        while not board.is_winner():
+            # incoming_data = client_conn.recv(1024)
+            # if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
+            #     print("Client ended the connection.")
+            #     break
 
-            print("Received: \"%s\"" % incoming_data.decode("utf-8"))
+            # print("Received: \"%s\"" % incoming_data.decode("utf-8"))
 
-            outgoing_msg = input("Send to client: ")
-            outgoing_data = bytes(outgoing_msg, "utf-8")
-            client_conn.send(outgoing_data)
-            if outgoing_msg == EXIT_MESSAGE:
-                print("You ended the connection.\n")
-                break
+            # outgoing_msg = input("Send to client: ")
+            # outgoing_data = bytes(outgoing_msg, "utf-8")
+            # client_conn.send(outgoing_data)
+            # if outgoing_msg == EXIT_MESSAGE:
+            #     print("You ended the connection.\n")
+            #     break
 
 
 if __name__ == "__main__":

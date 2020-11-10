@@ -30,7 +30,7 @@ class TicTacToe:
         return True
 
 
-    def check_win(self):
+    def is_winner(self):
         for line in np.row_stack((self.board, self.board.T, np.diag(self.board), np.diag(self.board))):
             line_unique_count = np.unique(line).size            # line=[NaN, NaN, NaN] will result in 3
             if line_unique_count == 1:
