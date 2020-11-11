@@ -8,6 +8,7 @@ EXIT_MESSAGE="goodbye"
 CLIENT_MARKER=1
 SERVER_MARKER=2
 VALID_MOVES=("0","1","2")
+clients=[]
 
 
 def start_server(host_ip, port_addr):
@@ -19,53 +20,43 @@ def start_server(host_ip, port_addr):
         print(HOST)
         server_socket.bind((host_ip, port_addr))
         while True:
-            print("\nWaiting for client connection...")
+            print("\nWaiting for client connections...")
             server_socket.listen()
             client_conn, client_addr = server_socket.accept()
-            handle_client(client_conn, client_addr)
+            print(f"Client connected at {client_addr}")
+            clients.append(client_conn)
+            if len(clients) == 2:
+                handle_clients()
+            #handle_client(client_conn, client_addr)
 
 
-def handle_client(client_conn, client_addr):
-    print(f"Connected by {client_addr}")
+def handle_clients():
+    client_one = clients[0]
+    client_two = clients[1]
+    while True:
 
-    with client_conn:
-        board = TicTacToe()
-        while True:
-            print("Waiting for client coordinates...")
-            incoming_data = client_conn.recv(1024)
-            if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
-                print("Client ended the connection.\n")
-                break
-            coordinates_string = incoming_data.decode("utf-8")
-            client_row = int(coordinates_string[0])
-            client_col = int(coordinates_string[1])
-            board.place(client_row, client_col, CLIENT_MARKER)
-            print(board)
-            if board.is_winner():
-                print("Client won!")
-                break
-            if board.is_draw():
-                print("Draw!")
-                break
+        client_one.send(bytes("send", "utf-8"))
+        client_two.send(bytes("receive", "utf-8"))
 
-            valid_input = False
-            while not valid_input:
-                row = input("Enter row: ")
-                col = input("Enter col: ")
-                if row in VALID_MOVES and col in VALID_MOVES:
-                    valid_input = True
-                else:
-                    print("Please enter row and column value of", VALID_MOVES)
-            board.place(int(row), int(col), SERVER_MARKER)
-            print(board)
+        client_one_data = client_one.recv(1024)
+        if not client_one_data or client_one_data.decode("utf-8") == EXIT_MESSAGE:
+            print("Client 1 ended the connection.\n")
+            break
+        coordinates_string = client_one_data.decode("utf-8")
 
-            client_conn.send(bytes(row+col, "utf-8"))
-            if board.is_winner():
-                print("You won!")
-                break
-            if board.is_draw():
-                print("Draw!")
-                break
+        client_two.send(bytes(coordinates_string, "utf-8"))
+
+
+        client_one.send(bytes("receive", "utf-8"))
+        client_two.send(bytes("send", "utf-8"))
+
+        client_two_data = client_two.recv(1024)
+        if not client_two_data or client_two_data.decode("utf-8") == EXIT_MESSAGE:
+            print("Client 2 ended the connection.\n")
+            break
+        coordinates_string = client_two_data.decode("utf-8")
+
+        client_one.send(bytes(coordinates_string, "utf-8"))
 
 
 if __name__ == "__main__":

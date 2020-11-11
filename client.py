@@ -10,52 +10,66 @@ SERVER_MARKER=2
 VALID_MOVES=("0","1","2")
 
 
+def send_coordinates(client_socket, board):
+    valid_input = False
+    while not valid_input:
+        row = input("Enter row: ")
+        col = input("Enter col: ")
+        if row in VALID_MOVES and col in VALID_MOVES:
+            valid_input = True
+        else:
+            print("Please enter row and column value of", VALID_MOVES)
+
+    board.place(int(row), int(col), CLIENT_MARKER)
+    print(board)
+
+    client_socket.send(bytes(row+col, "utf-8"))
+    if board.is_winner():
+        print("You won!")
+        return False
+    if board.is_draw():
+        print("Draw!")
+        return False
+    return True
+
+
+def receive_coordinates(client_socket, board):
+    print("Waiting for server coordinates...")
+    incoming_data = client_socket.recv(1024)
+    if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
+        print("Server ended the connection.\n")
+        return False
+    coordinates_string = incoming_data.decode("utf-8")
+    server_row = int(coordinates_string[0])
+    server_col = int(coordinates_string[1])
+    board.place(server_row, server_col, SERVER_MARKER)
+    print(board)
+    if board.is_winner():
+        print("Server won!")
+        return False
+    if board.is_draw():
+        print("Draw!")
+        return False
+    return True
+
+
 def start_client(host_ip, port_addr):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+    
     with client_socket:
         client_socket.connect((host_ip, port_addr))
 
         board = TicTacToe()
         print(board)
-        while True:
-            valid_input = False
-            while not valid_input:
-                row = input("Enter row: ")
-                col = input("Enter col: ")
-                if row in VALID_MOVES and col in VALID_MOVES:
-                    valid_input = True
-                else:
-                    print("Please enter row and column value of", VALID_MOVES)
+        game_still_going = True
+        while game_still_going:
+            status = client_socket.recv(1024)
+            status_message = status.decode("utf-8")
 
-            board.place(int(row), int(col), CLIENT_MARKER)
-            print(board)
-
-            #coords = row+col
-            client_socket.send(bytes(row+col, "utf-8"))
-            if board.is_winner():
-                print("You won!")
-                break
-            if board.is_draw():
-                print("Draw!")
-                break
-
-            print("Waiting for server coordinates...")
-            incoming_data = client_socket.recv(1024)
-            if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
-                print("Server ended the connection.\n")
-                break
-            coordinates_string = incoming_data.decode("utf-8")
-            server_row = int(coordinates_string[0])
-            server_col = int(coordinates_string[1])
-            board.place(server_row, server_col, SERVER_MARKER)
-            print(board)
-            if board.is_winner():
-                print("Server won!")
-                break
-            if board.is_draw():
-                print("Draw!")
-                break
+            if status_message == "send":
+                game_still_going = send_coordinates(client_socket, board)
+            else:
+                game_still_going = receive_coordinates(client_socket, board)
     print("Connection with server ended.")
 
 
