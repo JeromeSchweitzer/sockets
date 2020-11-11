@@ -7,6 +7,7 @@ PORT=8888
 EXIT_MESSAGE="goodbye"
 CLIENT_MARKER=1
 SERVER_MARKER=2
+VALID_MOVES=("0","1","2")
 
 
 def start_server(host_ip, port_addr):
@@ -43,15 +44,27 @@ def handle_client(client_conn, client_addr):
             if board.is_winner():
                 print("Client won!")
                 break
+            if board.is_draw():
+                print("Draw!")
+                break
 
-            row = input("Enter row: ")
-            col = input("Enter col: ")
+            valid_input = False
+            while not valid_input:
+                row = input("Enter row: ")
+                col = input("Enter col: ")
+                if row in VALID_MOVES and col in VALID_MOVES:
+                    valid_input = True
+                else:
+                    print("Please enter row and column value of", VALID_MOVES)
             board.place(int(row), int(col), SERVER_MARKER)
             print(board)
 
             client_conn.send(bytes(row+col, "utf-8"))
             if board.is_winner():
                 print("You won!")
+                break
+            if board.is_draw():
+                print("Draw!")
                 break
 
 

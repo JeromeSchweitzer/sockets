@@ -28,6 +28,11 @@ class TicTacToe:
         self.board[row][col] = marker
         self.is_winner()
         return True
+    
+    def is_draw(self):
+        if np.isnan(np.sum(self.board)):
+            return False
+        return True
 
 
     def is_winner(self):

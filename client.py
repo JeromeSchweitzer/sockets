@@ -7,6 +7,7 @@ PORT=8888
 EXIT_MESSAGE="goodbye"
 CLIENT_MARKER=1
 SERVER_MARKER=2
+VALID_MOVES=("0","1","2")
 
 
 def start_client(host_ip, port_addr):
@@ -18,8 +19,15 @@ def start_client(host_ip, port_addr):
         board = TicTacToe()
         print(board)
         while True:
-            row = input("Enter row: ")
-            col = input("Enter col: ")
+            valid_input = False
+            while not valid_input:
+                row = input("Enter row: ")
+                col = input("Enter col: ")
+                if row in VALID_MOVES and col in VALID_MOVES:
+                    valid_input = True
+                else:
+                    print("Please enter row and column value of", VALID_MOVES)
+
             board.place(int(row), int(col), CLIENT_MARKER)
             print(board)
 
@@ -27,6 +35,9 @@ def start_client(host_ip, port_addr):
             client_socket.send(bytes(row+col, "utf-8"))
             if board.is_winner():
                 print("You won!")
+                break
+            if board.is_draw():
+                print("Draw!")
                 break
 
             print("Waiting for server coordinates...")
@@ -41,6 +52,9 @@ def start_client(host_ip, port_addr):
             print(board)
             if board.is_winner():
                 print("Server won!")
+                break
+            if board.is_draw():
+                print("Draw!")
                 break
     print("Connection with server ended.")
 
