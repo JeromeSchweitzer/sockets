@@ -2,8 +2,8 @@ import socket
 from tic_tac_toe import TicTacToe
 
 
-HOST="127.0.0.1"
-PORT=9999
+HOST=socket.gethostbyname(socket.gethostname())
+PORT=8888
 EXIT_MESSAGE="goodbye"
 CLIENT_MARKER=1
 SERVER_MARKER=2
@@ -15,6 +15,7 @@ def start_server(host_ip, port_addr):
 
     with server_socket:
         print("Server started!")
+        print(HOST)
         server_socket.bind((host_ip, port_addr))
         while True:
             print("\nWaiting for client connection...")

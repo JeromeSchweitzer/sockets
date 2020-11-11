@@ -2,8 +2,8 @@ import socket
 from tic_tac_toe import TicTacToe
 
 
-HOST="127.0.0.1"
-PORT=9999
+#HOST=""
+PORT=8888
 EXIT_MESSAGE="goodbye"
 CLIENT_MARKER=1
 SERVER_MARKER=2
@@ -46,4 +46,5 @@ def start_client(host_ip, port_addr):
 
 
 if __name__ == "__main__":
-    start_client(host_ip=HOST, port_addr=PORT)
+    host_ip=input("Enter host IP address: ")
+    start_client(host_ip=host_ip, port_addr=PORT)
