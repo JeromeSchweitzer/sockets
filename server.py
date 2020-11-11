@@ -3,17 +3,21 @@ from tic_tac_toe import TicTacToe
 
 
 HOST="127.0.0.1"
-PORT=8888
+PORT=9999
 EXIT_MESSAGE="goodbye"
-MARKER=2
+CLIENT_MARKER=1
+SERVER_MARKER=2
 
 
 def start_server(host_ip, port_addr):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     with server_socket:
+        print("Server started!")
         server_socket.bind((host_ip, port_addr))
         while True:
+            print("\nWaiting for client connection...")
             server_socket.listen()
             client_conn, client_addr = server_socket.accept()
             handle_client(client_conn, client_addr)
@@ -24,20 +28,30 @@ def handle_client(client_conn, client_addr):
 
     with client_conn:
         board = TicTacToe()
-        while not board.is_winner():
-            # incoming_data = client_conn.recv(1024)
-            # if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
-            #     print("Client ended the connection.")
-            #     break
+        while True:
+            print("Waiting for client coordinates...")
+            incoming_data = client_conn.recv(1024)
+            if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
+                print("Client ended the connection.\n")
+                break
+            coordinates_string = incoming_data.decode("utf-8")
+            client_row = int(coordinates_string[0])
+            client_col = int(coordinates_string[1])
+            board.place(client_row, client_col, CLIENT_MARKER)
+            print(board)
+            if board.is_winner():
+                print("Client won!")
+                break
 
-            # print("Received: \"%s\"" % incoming_data.decode("utf-8"))
+            row = input("Enter row: ")
+            col = input("Enter col: ")
+            board.place(int(row), int(col), SERVER_MARKER)
+            print(board)
 
-            # outgoing_msg = input("Send to client: ")
-            # outgoing_data = bytes(outgoing_msg, "utf-8")
-            # client_conn.send(outgoing_data)
-            # if outgoing_msg == EXIT_MESSAGE:
-            #     print("You ended the connection.\n")
-            #     break
+            client_conn.send(bytes(row+col, "utf-8"))
+            if board.is_winner():
+                print("You won!")
+                break
 
 
 if __name__ == "__main__":

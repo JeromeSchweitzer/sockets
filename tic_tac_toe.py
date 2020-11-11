@@ -26,7 +26,7 @@ class TicTacToe:
         if not np.isnan(self.board[row][col]):
             return False
         self.board[row][col] = marker
-        self.check_win()
+        self.is_winner()
         return True
 
 
