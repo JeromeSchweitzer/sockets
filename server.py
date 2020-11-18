@@ -1,6 +1,7 @@
 import socket
 import threading
 from time import sleep
+from random import choice
 
 from tic_tac_toe import TicTacToe
 
@@ -46,17 +47,22 @@ def handle_client(client_conn, client_addr):
             client_row = int(coords_string[0])
             client_col = int(coords_string[1])
             board.place(client_row, client_col, CLIENT_MARKER)
-            print(board)
-            if board.is_winner():
-                #print("Client won!")
-                break
-            if board.is_draw():
-                #print("Draw!")
+            #print(board)
+            if board.is_winner() or board.is_draw():
                 break
 
             sleep(3)
-            client_conn.send(bytes("11", "utf-8"))
+            valid_move = False
+            while not valid_move:
+                row = choice(VALID_MOVES)
+                col = choice(VALID_MOVES)
+                valid_move = board.place(int(row), int(col), SERVER_MARKER)
 
+
+            client_conn.send(bytes(row+col, "utf-8"))
+
+            if board.is_winner() or board.is_draw():
+                break
 
             # valid_input = False
             # while not valid_input:
