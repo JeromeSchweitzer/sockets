@@ -1,5 +1,6 @@
 import socket
 import threading
+from time import sleep
 
 from tic_tac_toe import TicTacToe
 
@@ -52,7 +53,7 @@ def handle_client(client_conn, client_addr):
                 #print("Draw!")
                 break
 
-            
+            sleep(3)
             client_conn.send(bytes("11", "utf-8"))
 
 
