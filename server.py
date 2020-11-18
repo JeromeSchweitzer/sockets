@@ -1,4 +1,6 @@
 import socket
+import threading
+
 from tic_tac_toe import TicTacToe
 
 
@@ -23,7 +25,8 @@ def start_server(host_ip, port_addr):
             print("Listening for clients...")
             server_socket.listen()
             client_conn, client_addr = server_socket.accept()
-            handle_client(client_conn, client_addr)
+            client_thread = threading.Thread(target=handle_client, args=(client_conn, client_addr))
+            #handle_client(client_conn, client_addr)
 
 
 def handle_client(client_conn, client_addr):
