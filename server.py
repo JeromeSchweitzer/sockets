@@ -35,10 +35,10 @@ def handle_client(client_conn, client_addr):
     with client_conn:
         board = TicTacToe()
         while True:
-            print("Waiting for client coordinates..")
+            #print("Waiting for client coordinates..")
             incoming_data = client_conn.recv(1024)
             if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
-                print(f"Client {client_addr} connection closed.")
+                #print(f"Client {client_addr} connection closed.")
                 break
             coords_string = incoming_data.decode("utf-8")
             client_row = int(coords_string[0])
@@ -46,31 +46,34 @@ def handle_client(client_conn, client_addr):
             board.place(client_row, client_col, CLIENT_MARKER)
             print(board)
             if board.is_winner():
-                print("Client won!")
+                #print("Client won!")
                 break
             if board.is_draw():
-                print("Draw!")
+                #print("Draw!")
                 break
 
+            
+            client_conn.send(bytes("11", "utf-8"))
 
-            valid_input = False
-            while not valid_input:
-                row = input("Enter row: ")
-                col = input("Enter col: ")
-                if row in VALID_MOVES and col in VALID_MOVES:
-                    valid_input = True
-                else:
-                    print("Please enter valid row and column:", VALID_MOVES)
-            board.place(int(row), int(col), SERVER_MARKER)
-            print(board)
 
-            client_conn.send(bytes(row+col, "utf-8"))
-            if board.is_winner():
-                print("You won!")
-                break
-            if board.is_draw():
-                print("Draw!")
-                break
+            # valid_input = False
+            # while not valid_input:
+            #     row = input("Enter row: ")
+            #     col = input("Enter col: ")
+            #     if row in VALID_MOVES and col in VALID_MOVES:
+            #         valid_input = True
+            #     else:
+            #         print("Please enter valid row and column:", VALID_MOVES)
+            # board.place(int(row), int(col), SERVER_MARKER)
+            # print(board)
+
+            # client_conn.send(bytes(row+col, "utf-8"))
+            # if board.is_winner():
+            #     print("You won!")
+            #     break
+            # if board.is_draw():
+            #     print("Draw!")
+            #     break
 
 
 
