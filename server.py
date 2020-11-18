@@ -27,6 +27,7 @@ def start_server(host_ip, port_addr):
             server_socket.listen()
             client_conn, client_addr = server_socket.accept()
             client_thread = threading.Thread(target=handle_client, args=(client_conn, client_addr))
+            client_thread.start()
             #handle_client(client_conn, client_addr)
 
 
