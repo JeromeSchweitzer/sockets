@@ -5,7 +5,7 @@ from tic_tac_toe import TicTacToe
 
 
 HOST=socket.gethostbyname(socket.gethostname())
-PORT=8888
+PORT=9999
 EXIT_MESSAGE="goodbye"
 CLIENT_MARKER=1
 SERVER_MARKER=2
