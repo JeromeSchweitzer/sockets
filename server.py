@@ -38,50 +38,35 @@ def handle_client(client_conn, client_addr):
     with client_conn:
         board = TicTacToe()
         while True:
-            #print("Waiting for client coordinates..")
             incoming_data = client_conn.recv(1024)
             if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
-                #print(f"Client {client_addr} connection closed.")
                 break
             coords_string = incoming_data.decode("utf-8")
             client_row = int(coords_string[0])
             client_col = int(coords_string[1])
             board.place(client_row, client_col, CLIENT_MARKER)
-            #print(board)
-            if board.is_winner() or board.is_draw():
+            if board.is_winner():
+                print(f"You lost the game with {client_addr}")
+                break
+            if board.is_draw():
+                print(f"Game with {client_addr} drawn")
                 break
 
-            sleep(3)
+            sleep(2)
             valid_move = False
-            while not valid_move:
+            while not valid_move:   # The best AI is here
                 row = choice(VALID_MOVES)
                 col = choice(VALID_MOVES)
                 valid_move = board.place(int(row), int(col), SERVER_MARKER)
 
-
             client_conn.send(bytes(row+col, "utf-8"))
-
-            if board.is_winner() or board.is_draw():
+            if board.is_winner():
+                print(f"You won the game with {client_addr}")
                 break
-
-            # valid_input = False
-            # while not valid_input:
-            #     row = input("Enter row: ")
-            #     col = input("Enter col: ")
-            #     if row in VALID_MOVES and col in VALID_MOVES:
-            #         valid_input = True
-            #     else:
-            #         print("Please enter valid row and column:", VALID_MOVES)
-            # board.place(int(row), int(col), SERVER_MARKER)
-            # print(board)
-
-            # client_conn.send(bytes(row+col, "utf-8"))
-            # if board.is_winner():
-            #     print("You won!")
-            #     break
-            # if board.is_draw():
-            #     print("Draw!")
-            #     break
+            if board.is_draw():
+                print(f"Game with {client_addr} drawn")
+                break
+    print(f"Connection with {client_addr} terminated")
 
 
 
