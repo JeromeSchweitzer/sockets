@@ -24,7 +24,6 @@ def start_server(host_ip, port_addr):
         server_socket.bind((host_ip, port_addr))
 
         while True:
-            print("Listening for clients...")
             server_socket.listen()
             client_conn, client_addr = server_socket.accept()
             client_thread = threading.Thread(target=handle_client, args=(client_conn, client_addr))
