@@ -27,7 +27,7 @@ def start_server(host_ip, port_addr):
 
 
 def handle_client(client_conn, client_addr):
-    print(f"Connected by client {client_addr}")
+    print(f"Connected by client {client_addr[1]}")
 
     with client_conn:
         board = TicTacToe()
@@ -35,7 +35,7 @@ def handle_client(client_conn, client_addr):
             print("Waiting for client coordinates..")
             incoming_data = client_conn.recv(1024)
             if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
-                print(f"Client {client_addr} connection closed.")
+                print(f"Client {client_addr[1]} connection closed.")
                 break
             coords_string = incoming_data.decode("utf-8")
             client_row = int(coords_string[0])
