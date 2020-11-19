@@ -2,7 +2,7 @@ import socket
 import threading
 
 
-HOST="127.0.0.1"
+#HOST="127.0.0.1"
 PORT=9999
 EXIT_MESSAGE="goodbye"
 
@@ -29,15 +29,18 @@ def receive_data(client_socket):
 def start_client(host_ip, port_addr):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    with client_socket:
-        client_socket.connect((host_ip, port_addr))
+    #with client_socket:
+    client_socket.connect((host_ip, port_addr))
 
-        send_thread = threading.Thread(target=send_data, args=(client_socket))
-        receive_thread = threading.Thread(target=receive_data, args=(client_socket))
+    #send_thread = threading.Thread(target=send_data, args=(client_socket,))
 
-        send_thread.start()
-        receive_thread.start()
+    receive_thread = threading.Thread(target=receive_data, args=(client_socket,))
+
+    #send_thread.start()
+    receive_thread.start()
+    send_data(client_socket)
 
 
 if __name__ == "__main__":
-    start_client(host_ip=HOST, port_addr=PORT)
+    host = input("Enter host ip: ")
+    start_client(host_ip=host, port_addr=PORT)

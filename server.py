@@ -9,9 +9,11 @@ CLIENTS={}
 
 
 def send_to_all(incoming_data, sending_addr):
-    for addr, conn in CLIENTS:
-        if addr not sending_addr:
-            conn.send(incoming_data)
+    for addr in CLIENTS:
+        #print(addr)
+        #print(conn)
+        if addr != sending_addr:
+            CLIENTS[addr].send(incoming_data)
 
 
 def receive_data(client_conn, client_addr):
@@ -19,12 +21,14 @@ def receive_data(client_conn, client_addr):
         incoming_data = client_conn.recv(1024)
         if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
             print("Client ended the connection.")
+            CLIENTS.pop(client_addr)
             break
         send_to_all(incoming_data, sending_addr=client_addr)
 
 
 def start_server(host_ip, port_addr):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     print(HOST)
 
     with server_socket:
