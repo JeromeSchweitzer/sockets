@@ -2,8 +2,8 @@ import socket
 import threading
 
 
-HOST="127.0.0.1"
-PORT=8888
+HOST=socket.gethostbyname(socket.gethostname())
+PORT=9999
 EXIT_MESSAGE="goodbye"
 CLIENTS={}
 
@@ -25,6 +25,7 @@ def receive_data(client_conn, client_addr):
 
 def start_server(host_ip, port_addr):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    print(HOST)
 
     with server_socket:
         server_socket.bind((host_ip, port_addr))
