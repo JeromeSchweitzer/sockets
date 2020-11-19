@@ -3,7 +3,7 @@ from tic_tac_toe import TicTacToe
 
 
 #HOST=""
-PORT=8888
+PORT=9999
 EXIT_MESSAGE="goodbye"
 CLIENT_MARKER=1
 SERVER_MARKER=2
@@ -34,7 +34,7 @@ def send_coordinates(client_socket, board):
 
 
 def receive_coordinates(client_socket, board):
-    print("Waiting for server coordinates...")
+    print("Waiting for coordinates...")
     incoming_data = client_socket.recv(1024)
     if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
         print("Server ended the connection.\n")
