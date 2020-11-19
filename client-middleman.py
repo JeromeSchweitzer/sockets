@@ -62,7 +62,7 @@ def start_client(host_ip, port_addr):
         board = TicTacToe()
         print(board)
         game_still_going = True
-        while game_strill_going:
+        while game_still_going:
             status = client_socket.recv(1024)
             status_message = status.decode("utf-8")
 
