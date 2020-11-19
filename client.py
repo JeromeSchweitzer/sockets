@@ -9,7 +9,7 @@ EXIT_MESSAGE="goodbye"
 
 def send_data(client_socket):
     while True:
-        outgoing_msg = input("Enter message: ")
+        outgoing_msg = input("")
         outgoing_data = bytes(outgoing_msg, "utf-8")
         client_socket.send(outgoing_data)
         if outgoing_msg == EXIT_MESSAGE:
@@ -23,7 +23,7 @@ def receive_data(client_socket):
         if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
             print("Server ended the connection.\n")
             break
-        print("\nReceived: \"%s\"\nEnter message: " % incoming_data.decode("utf-8"))
+        print("\nReceived: \"%s\"\n" % incoming_data.decode("utf-8"))
 
 
 def start_client(host_ip, port_addr):
