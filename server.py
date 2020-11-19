@@ -39,28 +39,6 @@ def start_server(host_ip, port_addr):
             CLIENTS[client_addr] = client_conn
             client_thread = threading.Thread(target=receive_data, args=(client_conn, client_addr))
             client_thread.start()
-            #handle_client(client_conn, client_addr)
-
-
-# def handle_client(client_conn, client_addr):
-#     print(f"Connected by {client_addr}")
-
-#     with client_conn:
-
-        # while True:
-            # incoming_data = client_conn.recv(1024)
-            # if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
-            #     print("Client ended the connection.")
-            #     break
-
-            # print("Received: \"%s\"" % incoming_data.decode("utf-8"))
-
-        #     outgoing_msg = input("Send to client: ")
-        #     outgoing_data = bytes(outgoing_msg, "utf-8")
-        #     client_conn.send(outgoing_data)
-        #     if outgoing_msg == EXIT_MESSAGE:
-        #         print("You ended the connection.\n")
-        #         break
 
 
 if __name__ == "__main__":

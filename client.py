@@ -23,20 +23,15 @@ def receive_data(client_socket):
         if not incoming_data or incoming_data.decode("utf-8") == EXIT_MESSAGE:
             print("Server ended the connection.\n")
             break
-        print("Received: \"%s\"" % incoming_data.decode("utf-8"))
+        print("\nReceived: \"%s\"Enter message: " % incoming_data.decode("utf-8"))
 
 
 def start_client(host_ip, port_addr):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    #with client_socket:
     client_socket.connect((host_ip, port_addr))
-
-    #send_thread = threading.Thread(target=send_data, args=(client_socket,))
 
     receive_thread = threading.Thread(target=receive_data, args=(client_socket,))
 
-    #send_thread.start()
     receive_thread.start()
     send_data(client_socket)
 
